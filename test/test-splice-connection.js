@@ -14,9 +14,9 @@ if (!jinst.isJvmCreated()) {
                         './drivers/derbytools.jar']);
 }
 var config = {
-  url: 'jdbc:hsqldb:hsql://localhost/xdb',
-  user : 'SA',
-  password: ''
+    url: 'jdbc:splice://localhost:1528/splicedb;user=splice;password=admin',
+  user : 'user',
+  password: 'admin'
 };
 
 var testconn = null;

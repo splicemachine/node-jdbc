@@ -14,6 +14,7 @@ if (!jinst.isJvmCreated()) {
   jinst.addOption("-Xrs");
   jinst.setupClasspath(['./drivers/hsqldb.jar',
                         './drivers/derby.jar',
+                        './drivers/splice.jar',
                         './drivers/derbyclient.jar',
                         './drivers/derbytools.jar']);
 }

@@ -11,22 +11,17 @@ if (!jinst.isJvmCreated()) {
                         './drivers/derbytools.jar']);
 }
 
-var config = {
-  url: 'jdbc:hsqldb:hsql://localhost/xdb',
-  drivername: 'org.hsqldb.jdbc.JDBCDriver',
-  user: 'SA',
-  password: '',
-  minpoolsize: 10
-};
+var splice = new JDBC({
+  url: 'jdbc:splice://localhost:1528/splicedb;user=splice;password=admin'
+});
 
-var hsqldb = new JDBC(config);
 var testconn = null;
 var testDate = Date.now();
 
 module.exports = {
   setUp: function(callback) {
-    if (testconn === null && hsqldb._pool.length > 0) {
-      hsqldb.reserve(function(err, conn) {
+    if (testconn === null && splice._pool.length > 0) {
+      splice.reserve(function(err, conn) {
         testconn = conn;
         callback();
       });
@@ -36,7 +31,7 @@ module.exports = {
   },
   tearDown: function(callback) {
     if (testconn) {
-      hsqldb.release(testconn, function(err) {
+      splice.release(testconn, function(err) {
         callback();
       });
     } else {
@@ -44,9 +39,9 @@ module.exports = {
     }
   },
   testinitialize: function(test) {
-    hsqldb.initialize(function(err) {
+    splice.initialize(function(err) {
       test.expect(1);
-      test.equal(null, err);
+      test.equal(err, null);
       test.done();
     });
   },
@@ -55,17 +50,12 @@ module.exports = {
       if (err) {
         console.log(err);
       } else {
-        statement.executeUpdate("CREATE TABLE blah (id int, name varchar(10), date DATE, time TIME, timestamp TIMESTAMP);", function(err, result) {
-          test.expect(2);
+        var create = "CREATE TABLE blah ";
+        create += "(id int, bi bigint, name varchar(10), date DATE, time TIME, timestamp TIMESTAMP)";
+        statement.executeUpdate(create, function(err, result) {
+          test.expect(1);
           test.equal(null, err);
-          test.equal(0, result);
-          statement.close(function(err) {
-            if (err) {
-              console.log(err);
-            } else {
-              test.done();
-            }
-          });
+          test.done();
         });
       }
     });
@@ -75,7 +65,9 @@ module.exports = {
       if (err) {
         console.log(err);
       } else {
-        statement.executeUpdate("INSERT INTO blah VALUES (1, 'Jason', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP);", function(err, result) {
+        var insert = "INSERT INTO blah VALUES ";
+        insert += "(1, 9223372036854775807, 'Jason', CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP)";
+        statement.executeUpdate(insert, function(err, result) {
           test.expect(2);
           test.equal(null, err);
           test.ok(result && result == 1);
@@ -89,7 +81,7 @@ module.exports = {
       if (err) {
         console.log(err);
       } else {
-        statement.executeUpdate("UPDATE blah SET id = 2 WHERE name = 'Jason';", function(err, result) {
+        statement.executeUpdate("UPDATE blah SET id = 2 WHERE name = 'Jason'", function(err, result) {
           test.expect(2);
           test.equal(null, err);
           test.ok(result && result == 1);
@@ -103,12 +95,13 @@ module.exports = {
       if (err) {
         console.log(err);
       } else {
-        statement.executeQuery("SELECT * FROM blah;", function(err, resultset) {
-          test.expect(7);
+        statement.executeQuery("SELECT * FROM blah", function(err, resultset) {
+          test.expect(8);
           test.equal(null, err);
           test.ok(resultset);
           resultset.toObjArray(function(err, results) {
             test.equal(results.length, 1);
+            test.equal(results[0].BI, '9223372036854775807');
             test.equal(results[0].NAME, 'Jason');
             test.ok(results[0].DATE);
             test.ok(results[0].TIME);
@@ -124,7 +117,7 @@ module.exports = {
       if (err) {
         console.log(err);
       } else {
-        statement.setInt(1,2, function(err) {
+        statement.setInt(1, 2, function(err) {
           if (err) {
             console.log(err);
           }
@@ -177,15 +170,14 @@ module.exports = {
         statement.setDate(1, sqlDate, null, function(err) {
           if (err) {
             console.log(err);
-          }
-          else {
+          } else {
             statement.executeUpdate(function(err, numrows) {
               if (err) {
                 console.log(err);
               } else {
                 test.expect(2);
                 test.equal(null, err);
-                test.equal(1,numrows);
+                test.equal(1, numrows);
                 test.done();
               }
             });
@@ -294,23 +286,10 @@ module.exports = {
       if (err) {
         console.log(err);
       } else {
-        statement.executeUpdate("DELETE FROM blah WHERE id = 2;", function(err, result) {
+        statement.executeUpdate("DELETE FROM blah WHERE id = 2", function(err, result) {
           test.expect(2);
           test.equal(null, err);
           test.ok(result && result == 1);
-          test.done();
-        });
-      }
-    });
-  },
-  testcancel: function (test) {
-    testconn.conn.createStatement(function (err, statement) {
-      if (err) {
-        console.log(err);
-      } else {
-        statement.cancel(function(err) {
-          test.expect(1);
-          test.equal(null, err);
           test.done();
         });
       }
@@ -321,10 +300,9 @@ module.exports = {
       if (err) {
         console.log(err);
       } else {
-        statement.executeUpdate("DROP TABLE blah;", function(err, result) {
-          test.expect(2);
+        statement.executeUpdate("DROP TABLE blah", function(err, result) {
+          test.expect(1);
           test.equal(null, err);
-          test.equal(0, result);
           test.done();
         });
       }
