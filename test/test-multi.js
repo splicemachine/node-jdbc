@@ -16,7 +16,7 @@ var configWithUserInUrl = {
 };
 
 var configderby = {
-  url: 'jdbc:derby://localhost:1527/testdb'
+  url: 'jdbc:derby://localhost:7251/testdb'
 };
 
 var hsqldb = new JDBC(configWithUserInUrl);

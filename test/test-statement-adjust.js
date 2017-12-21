@@ -12,7 +12,7 @@ if (!jinst.isJvmCreated()) {
 }
 
 var derby = new JDBC({
-  url: 'jdbc:derby://localhost:1527/testdb;create=true'
+  url: 'jdbc:derby://localhost:7251/testdb;create=true'
 });
 
 var testconn = null;

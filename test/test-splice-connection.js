@@ -14,7 +14,7 @@ if (!jinst.isJvmCreated()) {
                         './drivers/derbytools.jar']);
 }
 var config = {
-    url: 'jdbc:splice://localhost:1528/splicedb;user=splice;password=admin',
+    url: 'jdbc:splice://localhost:1527/splicedb;user=splice;password=admin',
   user : 'user',
   password: 'admin'
 };
