@@ -1,6 +1,6 @@
 {
   "name": "@splice-machine/splice-jdbc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description":
     "Extends Node JDBC wrapper with tests for locally running Splice Machine",
   "main": "index.js",
