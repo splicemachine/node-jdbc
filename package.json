@@ -1,8 +1,13 @@
 {
-  "name": "jdbc",
-  "version": "0.6.2-pre.0",
-  "description": "Node Module JDBC wrapper",
+  "name": "splice-jdbc",
+  "version": "0.0.1",
+  "description":
+    "Extends Node JDBC wrapper with tests for locally running Splice Machine",
   "main": "index.js",
+  "directories": {
+    "doc": ".",
+    "lib": "lib"
+  },
   "dependencies": {
     "async": "~2.6.0",
     "java": "^0.9.0",
@@ -24,21 +29,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/CraZySacX/node-jdbc.git"
+    "url": "git+https://github.com/splicemachine/node-jdbc.git"
   },
-  "directories": {
-    "doc": ".",
-    "lib": "lib"
-  },
-  "keywords": [
-    "node",
-    "jdbc",
-    "wrapper"
-  ],
+  "keywords": ["node", "jdbc", "wrapper", "splice-machine"],
   "engines": {
     "node": ">=0.10"
   },
-  "author": "Jason Ozias <jason.g.ozias@gmail.com>",
+  "author": "Nikhil Nygaard <https://nygaard.site>",
   "license": "MIT",
-  "readmeFilename": "README.md"
+  "bugs": {
+    "url": "https://github.com/splicemachine/node-jdbc/issues"
+  },
+  "homepage": "https://github.com/splicemachine/node-jdbc#readme"
 }
